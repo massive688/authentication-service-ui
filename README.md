@@ -1,2 +1,15 @@
-# oauth-api-authentication-service-ui
-oauth-api-authentication-service-ui
+# umi project
+
+## Getting Started
+
+Install dependencies,
+
+```bash
+$ yarn
+```
+
+Start the dev server,
+
+```bash
+$ yarn start
+```
