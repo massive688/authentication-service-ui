@@ -1,8 +1,6 @@
 import request from '@/utils/request';
 
-export declare interface ParamsType {
-
-}
+export declare interface ParamsType {}
 
 export async function login(params: ParamsType) {
   return request.post('/api/oauth/sign', {
@@ -10,8 +8,21 @@ export async function login(params: ParamsType) {
   });
 }
 
-export async function oauthVerify(params: ParamsType) {
-  return request.head('/oauthapi/oauth/verify', {
+export async function oauthVerify(params: any) {
+  let urlParams = new URLSearchParams(),
+    name;
+  for (name in params) {
+    if (params[name]) {
+      urlParams.append(name, params[name]);
+    }
+  }
+  return request.post('/oauthapi/oauth/verify', {
+    data: urlParams,
+  });
+}
+
+export async function oauthAllow(params: ParamsType) {
+  return request.post('/oauthapi/oauth/agree', {
     data: params,
   });
 }

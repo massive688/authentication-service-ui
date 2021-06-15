@@ -1,11 +1,9 @@
 import { Reducer } from 'redux';
 
 import { Effect } from 'dva';
-import { login, oauthVerify } from '@/service/oauth';
+import { login, oauthAllow, oauthVerify } from '@/service/oauth';
 
-export interface OauthType {
-
-}
+export interface OauthType {}
 export interface ResultType {
   code: number;
   message: string;
@@ -25,6 +23,7 @@ export interface ModelType {
   effects: {
     fetch: Effect;
     verification: Effect;
+    allow: Effect;
   };
   reducers: {
     list: Reducer<Partial<OauthList>>;
@@ -37,23 +36,29 @@ const Model: ModelType = {
   state: {
     list: [],
     result: {},
-    name: "welcome this here, let's go oauth login"
+    name: "welcome this here, let's go oauth login",
   },
   effects: {
-    *fetch({payload}, { call, put }) {
-      const response = yield call(login, payload)
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(login, payload);
       yield put({
         type: 'list',
-        payload: { name: 'very good' }
-      })
+        payload: { name: 'very good' },
+      });
     },
-    *verification({payload}, { call, put }) {
-      const result = yield call(oauthVerify, payload)
+    *verification({ payload }, { call, put }) {
+      const result = yield call(oauthVerify, payload);
       yield put({
         type: 'result',
-        payload: { result }
-      })
-      return Promise.resolve()
+        payload: { result },
+      });
+    },
+    *allow({ payload }, { call, put }) {
+      const result = yield call(oauthAllow, payload);
+      yield put({
+        type: 'result',
+        payload: { result },
+      });
     },
   },
 
@@ -62,12 +67,12 @@ const Model: ModelType = {
       return {
         ...state,
         list: action.payload,
-        name: action.payload.name
+        name: action.payload.name,
       };
     },
     result(state, action) {
       return {
-        result: action.payload.result
+        result: action.payload.result,
       };
     },
   },

@@ -54,17 +54,24 @@ const request = extend({
 });
 
 // @ts-ignore
-request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
-  let { headers } = options;
-  let authSec = localStorage.getItem('with-sec');
-  let authToken = localStorage.getItem('author-token');
-  return (
-    {
+request.interceptors.request.use(
+  async (url: string, options: RequestOptionsInit) => {
+    let { headers } = options;
+    let authSec = localStorage.getItem('with-sec');
+    let authToken = localStorage.getItem('author-token');
+    return {
       url: url,
-      options: { ...options, headers: { ...headers, 'with-auth-sec': authSec, 'author-token': authToken } },
-    }
-  );
-});
+      options: {
+        ...options,
+        headers: {
+          ...headers,
+          'with-auth-sec': authSec,
+          'author-token': authToken,
+        },
+      },
+    };
+  },
+);
 request.interceptors.response.use(async (response: any) => {
   // const data = await response.clone().json();
   // if (data.code) {
@@ -74,10 +81,10 @@ request.interceptors.response.use(async (response: any) => {
   //       return false;
   //   }
   // }
-  let error = response.headers.get('error')
-  if (error) {
-    return { error };
-  }
+  // let error = response.headers.get('error')
+  // if (error) {
+  //   return { error };
+  // }
   return response;
 });
 export default request;
