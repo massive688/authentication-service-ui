@@ -5,7 +5,7 @@ import { login, oauthAllow, oauthVerify } from '@/service/oauth';
 import { ResultType } from '@/pages/model.data';
 
 export interface OauthType {}
-export interface OauthList {
+export interface UserState {
   list: OauthType[];
   name: string;
   result: Partial<ResultType>;
@@ -13,24 +13,22 @@ export interface OauthList {
 
 export interface ModelType {
   namespace: string;
-  state: Partial<OauthList>;
+  state: Partial<UserState>;
   effects: {
     fetch: Effect;
-    verification: Effect;
-    allow: Effect;
+    login: Effect;
+    register: Effect;
   };
   reducers: {
-    list: Reducer<Partial<OauthList>>;
-    result: Reducer<Partial<OauthList>>;
+    list: Reducer<Partial<UserState>>;
+    result: Reducer<Partial<UserState>>;
   };
 }
 
 const Model: ModelType = {
-  namespace: 'oauth',
+  namespace: 'user',
   state: {
-    list: [],
     result: {},
-    name: "welcome this here, let's go oauth login",
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -40,14 +38,14 @@ const Model: ModelType = {
         payload: { name: 'very good' },
       });
     },
-    *verification({ payload }, { call, put }) {
+    *login({ payload }, { call, put }) {
       const result = yield call(oauthVerify, payload);
       yield put({
         type: 'result',
         payload: { result },
       });
     },
-    *allow({ payload }, { call, put }) {
+    *register({ payload }, { call, put }) {
       const result = yield call(oauthAllow, payload);
       yield put({
         type: 'result',

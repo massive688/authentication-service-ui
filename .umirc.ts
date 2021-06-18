@@ -8,13 +8,13 @@ export default defineConfig({
     '/api': {
       target: 'http://127.0.0.1:9060',
       changeOrigin: true,
-      pathRewrite: { '^/api' : '' },
+      pathRewrite: { '^/api': '' },
     },
     '/oauthapi': {
       target: 'http://127.0.0.1:9060',
       changeOrigin: true,
-      pathRewrite: { '^/oauthapi' : '' },
-    }
+      pathRewrite: { '^/oauthapi': '' },
+    },
   },
   dva: {
     disableModelsReExport: true,
@@ -31,7 +31,7 @@ export default defineConfig({
     // { path: '/cas/loginApi', component: '@/pages/oauth/index' },
     // { path: '/oauth/:id', component: '@/pages/oauth/index' },
     { path: '/oauth/authorize', component: '@/pages/oauth/index' },
-    { path: '/oauth/sign', component: '@/pages/oauth/index' },
+    { path: '/oauth/sign', component: '@/pages/user/login' },
     // { path: '/oauth', component: '@/pages/oauth/index' },
     { path: '/', component: '@/pages/index' },
   ],

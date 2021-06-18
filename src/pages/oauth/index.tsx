@@ -1,11 +1,12 @@
 import { connect } from 'dva';
 import React, { Dispatch } from 'react';
-import { OauthType, ResultType } from '@/pages/oauth/model';
+import { OauthType } from '@/pages/oauth/model';
 import { Button, Spin } from 'antd';
 import { md5Encrypt } from '@/utils/encrypt';
 import QRCode from 'qrcode.react';
 import { oauthLoading } from './index.less';
 import dispatcher from '@@/plugin-model/helpers/dispatcher';
+import { ResultType } from '@/pages/model.data';
 
 declare interface OauthProps {
   list: OauthType[];
@@ -89,8 +90,6 @@ class Index extends React.Component<OauthProps, OauthState> {
     });
   }
   componentDidMount() {
-    let Referer = document.referrer;
-    console.log(Referer);
     this.props.dispatch({ type: 'oauth/fetch', payload: { ...this.state } });
     setTimeout(this.setPreLoadingFalse, 5000);
   }
@@ -147,7 +146,7 @@ class Index extends React.Component<OauthProps, OauthState> {
         }
       } else {
         history.push('sign');
-        return;
+        return <span></span>;
       }
     }
 
