@@ -56,9 +56,9 @@ class Index extends React.Component<OauthProps, OauthState> {
 
   constructor(props: OauthProps) {
     super(props);
+    //grant authorization
     let {
       dispatch,
-      match: { params: type },
       location: {
         query: {
           client_id,
@@ -71,10 +71,7 @@ class Index extends React.Component<OauthProps, OauthState> {
           safeCode,
         },
       },
-    } = props;
-    this.setState({ type: type });
-
-    //grant authorization
+    } = this.props;
     dispatch({
       type: 'oauth/verification',
       payload: {
@@ -90,9 +87,28 @@ class Index extends React.Component<OauthProps, OauthState> {
     });
   }
   componentDidMount() {
-    this.props.dispatch({ type: 'oauth/fetch', payload: { ...this.state } });
-    setTimeout(this.setPreLoadingFalse, 5000);
+    const {
+      match: { params: type },
+    } = this.props;
+    this.setState({ type: type });
   }
+
+  componentDidUpdate(
+    prevProps: Readonly<OauthProps>,
+    prevState: Readonly<OauthState>,
+    snapshot?: any,
+  ): void {
+    const {
+      loadedResult: { code, message, data },
+      history,
+    } = this.props;
+    if (code === 2000) {
+      if (!data.signed) {
+        history.push('sign');
+      }
+    }
+  }
+
   setPreLoadingFalse = () => {
     this.setState({ preLoading: false });
   };
@@ -108,8 +124,8 @@ class Index extends React.Component<OauthProps, OauthState> {
     const { url } = this.state;
     const {
       loadedResult: { code, message, data },
-      loading,
       history,
+      loading,
     } = this.props;
     if (loading) {
       return (
@@ -130,26 +146,20 @@ class Index extends React.Component<OauthProps, OauthState> {
         return <div>{errmsg}</div>;
       }
     } else {
-      if (data.signed) {
-        switch (data.scope) {
-          case 'single':
-            this.allowAuthorize();
-            return;
-          case 'sing-api':
-          case 'oauth':
-            return (
-              <div>
-                <Button onClick={this.noAllow}>Allow</Button>
-                <Button onClick={this.allowAuthorize}>Allow</Button>
-              </div>
-            );
-        }
-      } else {
-        history.push('sign');
-        return <span></span>;
+      switch (data.scope) {
+        case 'single':
+          this.allowAuthorize();
+          return;
+        case 'sign-api':
+        case 'sign-auth':
+          return (
+            <div>
+              <Button onClick={this.noAllow}>No</Button>
+              <Button onClick={this.allowAuthorize}>Allow</Button>
+            </div>
+          );
       }
     }
-
     return (
       <div>
         {this.props.name}
@@ -158,7 +168,7 @@ class Index extends React.Component<OauthProps, OauthState> {
           Button
         </Button>
         <div>
-          <QRCode value={url} style={{ margin: '30px' }}></QRCode>
+          <QRCode value={url} style={{ margin: '30px' }} />
         </div>
       </div>
     );

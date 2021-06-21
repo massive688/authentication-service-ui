@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { Dispatch } from 'react';
 import { connect } from 'dva';
 import { ResultType } from '@/pages/model.data';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
+import { md5Encrypt } from '@/utils/encrypt';
 interface LoginProps {
   result: ResultType;
+  dispatch: Dispatch<any>;
 }
 interface LoginState {}
-@connect(({ user: result }: { user: { result: ResultType } }) => ({ result }))
+@connect(({ user: { result } }: { user: { result: ResultType } }) => ({
+  result,
+}))
 class Login extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
+  }
+
+  componentDidUpdate(
+    prevProps: Readonly<LoginProps>,
+    prevState: Readonly<LoginState>,
+    snapshot?: any,
+  ): void {
+    const {
+      result: { code, message, data },
+    } = this.props;
+    if (code === 2000) {
+      console.log(message);
+      window.location.href = data.redirect;
+    }
   }
 
   render(): React.ReactNode {
@@ -32,6 +50,12 @@ class Login extends React.Component<LoginProps, LoginState> {
 
     const onFinish = (values: any) => {
       console.log('Success:', values);
+      const { dispatch } = this.props;
+      let password = values.password;
+      dispatch({
+        type: 'user/login',
+        payload: { ...values, password: md5Encrypt(password) },
+      });
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -39,38 +63,61 @@ class Login extends React.Component<LoginProps, LoginState> {
     };
 
     return (
-      <Form
-        name="basic"
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
+      <Row justify="center" style={{ marginTop: '20px' }}>
+        <Col xs={23} sm={16} md={12} lg={10} xl={8}>
+          <Form
+            name="basic"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+          >
+            <Form.Item
+              label=""
+              name="username"
+              rules={[
+                {
+                  required: true,
+                  message: '用户名不能为空/Please input your username!',
+                },
+              ]}
+            >
+              <Input placeholder={'请输入用户名/username'} size={'large'} />
+            </Form.Item>
 
-        <Form.Item
-          label="Password"
-          name="password"
-          rules={[{ required: true, message: 'Please input your password!' }]}
-        >
-          <Input.Password />
-        </Form.Item>
+            <Form.Item
+              label=""
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: '密码不能为空/Please input your password!',
+                },
+              ]}
+            >
+              <Input.Password
+                placeholder={'请输入密码/password'}
+                size={'large'}
+              />
+            </Form.Item>
 
-        <Form.Item name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+            <Form.Item name="remember" valuePropName="checked">
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
+            <Form.Item>
+              <Button
+                type="primary"
+                shape="round"
+                block
+                size={'large'}
+                htmlType="submit"
+              >
+                登 录
+              </Button>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
     );
   }
 }

@@ -8,10 +8,12 @@ export default defineConfig({
     '/api': {
       target: 'http://127.0.0.1:9060',
       changeOrigin: true,
+      ws: true,
       pathRewrite: { '^/api': '' },
     },
     '/oauthapi': {
       target: 'http://127.0.0.1:9060',
+      ws: true,
       changeOrigin: true,
       pathRewrite: { '^/oauthapi': '' },
     },
@@ -19,6 +21,9 @@ export default defineConfig({
   dva: {
     disableModelsReExport: true,
     lazyLoad: true,
+  },
+  dynamicImport: {
+    loading: '@/components/loading',
   },
   antd: {
     dark: false,
@@ -32,7 +37,7 @@ export default defineConfig({
     // { path: '/oauth/:id', component: '@/pages/oauth/index' },
     { path: '/oauth/authorize', component: '@/pages/oauth/index' },
     { path: '/oauth/sign', component: '@/pages/user/login' },
-    // { path: '/oauth', component: '@/pages/oauth/index' },
+    { path: '/sse', component: '@/pages/sseindex' },
     { path: '/', component: '@/pages/index' },
   ],
   fastRefresh: {},

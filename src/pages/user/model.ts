@@ -31,15 +31,9 @@ const Model: ModelType = {
     result: {},
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(login, payload);
-      yield put({
-        type: 'list',
-        payload: { name: 'very good' },
-      });
-    },
+    *fetch({ payload }, { call, put }) {},
     *login({ payload }, { call, put }) {
-      const result = yield call(oauthVerify, payload);
+      const result = yield call(login, payload);
       yield put({
         type: 'result',
         payload: { result },
