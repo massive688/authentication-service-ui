@@ -118,6 +118,12 @@ class Index extends React.Component<OauthProps, OauthState> {
     const { dispatch } = this.props;
     dispatch({
       type: 'oauth/allow',
+      callback: (res: any) => {
+        let { code, data } = res;
+        if (code === 2000) {
+          window.location.href = data.redirect;
+        }
+      },
     });
   };
   render() {

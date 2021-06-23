@@ -47,12 +47,13 @@ const Model: ModelType = {
         payload: { result },
       });
     },
-    *allow({ payload }, { call, put }) {
+    *allow({ payload, callback }, { call, put }) {
       const result = yield call(oauthAllow, payload);
-      yield put({
-        type: 'result',
-        payload: { result },
-      });
+      callback && callback(result);
+      // yield put({
+      //   type: 'result',
+      //   payload: { result },
+      // });
     },
   },
 
