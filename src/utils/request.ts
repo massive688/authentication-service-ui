@@ -53,12 +53,14 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie
 });
 
+const signTokenKey = 'signed-token';
+
 // @ts-ignore
 request.interceptors.request.use(
   async (url: string, options: RequestOptionsInit) => {
     let { headers } = options;
     let authSec = localStorage.getItem('with-sec');
-    let authToken = localStorage.getItem('author-token');
+    let authToken = localStorage.getItem(signTokenKey);
     return {
       url: url,
       options: {
@@ -66,7 +68,7 @@ request.interceptors.request.use(
         headers: {
           ...headers,
           'with-auth-sec': authSec,
-          'author-token': authToken,
+          'signed-token': authToken,
         },
       },
     };
@@ -81,10 +83,14 @@ request.interceptors.response.use(async (response: any) => {
   //       return false;
   //   }
   // }
-  // let error = response.headers.get('error')
-  // if (error) {
-  //   return { error };
-  // }
+  let singedToken = response.headers.get(signTokenKey);
+  if (singedToken) {
+    localStorage.setItem(signTokenKey, singedToken);
+  }
+  let withSec = response.headers.get('with-auth-sec');
+  if (withSec) {
+    localStorage.setItem('with-sec', withSec);
+  }
   return response;
 });
 export default request;
