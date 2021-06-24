@@ -163,7 +163,7 @@ class Index extends React.Component<OauthProps, OauthState> {
       switch (scope) {
         case 'single':
           this.allowAuthorize();
-          return;
+          return <span></span>;
         case 'sing-api':
         case 'sign-auth':
           return (
