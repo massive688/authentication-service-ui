@@ -55,25 +55,24 @@ const request = extend({
 
 const signTokenKey = 'signed-token';
 
-// @ts-ignore
-request.interceptors.request.use(
-  async (url: string, options: RequestOptionsInit) => {
-    let { headers } = options;
-    let authSec = localStorage.getItem('with-sec');
-    let authToken = localStorage.getItem(signTokenKey);
-    return {
-      url: url,
-      options: {
-        ...options,
-        headers: {
-          ...headers,
-          'with-auth-sec': authSec,
-          'signed-token': authToken,
-        },
+const useRequestFn = async (url: string, options: RequestOptionsInit) => {
+  let { headers } = options;
+  let authSec = localStorage.getItem('with-sec');
+  let authToken = localStorage.getItem(signTokenKey);
+  return {
+    url: url,
+    options: {
+      ...options,
+      headers: {
+        ...headers,
+        'with-auth-sec': authSec,
+        'signed-token': authToken,
       },
-    };
-  },
-);
+    },
+  };
+};
+// @ts-ignore
+request.interceptors.request.use(useRequestFn);
 request.interceptors.response.use(async (response: any) => {
   // const data = await response.clone().json();
   // if (data.code) {
