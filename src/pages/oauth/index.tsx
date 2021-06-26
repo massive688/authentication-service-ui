@@ -152,26 +152,20 @@ class Index extends React.Component<OauthProps, OauthState> {
         return <div>{errmsg}</div>;
       }
     } else {
-      let scope:string;
-      if (data.scope.indexOf('sign-auth') > -1) {
-        scope = 'sign-auth'
-      } else if (data.scope.indexOf('single') > -1) {
-        scope = 'single'
-      } else {
-        scope = 'sing-api'
-      }
-      switch (scope) {
-        case 'single':
-          this.allowAuthorize();
-          return <span></span>;
-        case 'sing-api':
-        case 'sign-auth':
-          return (
-            <div>
-              <Button onClick={this.noAllow}>No</Button>
-              <Button onClick={this.allowAuthorize}>Allow</Button>
-            </div>
-          );
+      let scope:string = data.scope;
+      if (scope && scope[0]) {
+        switch (scope[0]) {
+          case 'single-sign':
+            this.allowAuthorize();
+            return <span></span>;
+          default:
+            return (
+              <div>
+                <Button onClick={this.noAllow}>No</Button>
+                <Button onClick={this.allowAuthorize}>Allow</Button>
+              </div>
+            );
+        }
       }
     }
     return (
