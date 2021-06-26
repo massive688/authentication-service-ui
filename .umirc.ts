@@ -37,6 +37,7 @@ export default defineConfig({
     // { path: '/oauth/:id', component: '@/pages/oauth/index' },
     { path: '/oauth/authorize', component: '@/pages/oauth/index' },
     { path: '/oauth/sign', component: '@/pages/user/login' },
+    { path: '/oauth/logout', component: '@/pages/user/logout' },
     { path: '/sse', component: '@/pages/sseindex' },
     { path: '/', component: '@/pages/index' },
   ],

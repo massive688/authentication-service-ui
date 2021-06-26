@@ -74,14 +74,7 @@ const useRequestFn = async (url: string, options: RequestOptionsInit) => {
 // @ts-ignore
 request.interceptors.request.use(useRequestFn);
 request.interceptors.response.use(async (response: any) => {
-  // const data = await response.clone().json();
-  // if (data.code) {
-  //   switch (data.code) {
-  //     case 4213:
-  //     case 4214:
-  //       return false;
-  //   }
-  // }
+  console.log(response);
   let singedToken = response.headers.get(signTokenKey);
   if (singedToken) {
     localStorage.setItem(signTokenKey, singedToken);
@@ -89,6 +82,18 @@ request.interceptors.response.use(async (response: any) => {
   let withSec = response.headers.get('with-auth-sec');
   if (withSec) {
     localStorage.setItem('with-sec', withSec);
+  }
+  const responseData = await response.clone().json();
+  if (responseData) {
+    let {code, message, data} = responseData
+    switch (code) {
+      case 4213:
+      case 4214:
+        return false;
+      case 3021:
+        location.href = data;
+        return false;
+    }
   }
   return response;
 });

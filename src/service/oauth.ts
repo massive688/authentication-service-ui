@@ -7,6 +7,9 @@ export async function login(params: ParamsType) {
     data: params,
   });
 }
+export async function logout() {
+  return request.post('/api/oauth/logout');
+}
 
 export async function oauthVerify(params: any) {
   let urlParams = new URLSearchParams(),
@@ -18,6 +21,12 @@ export async function oauthVerify(params: any) {
   }
   return request.post('/oauthapi/oauth/verify', {
     data: urlParams,
+  });
+}
+
+export async function oauthDenied(params: ParamsType) {
+  return request.post('/oauthapi/oauth/reject', {
+    data: params,
   });
 }
 

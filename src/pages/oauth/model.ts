@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 
 import { Effect } from 'dva';
-import { login, oauthAllow, oauthVerify } from '@/service/oauth';
+import { login, oauthAllow, oauthDenied, oauthVerify } from '@/service/oauth';
 import { ResultType } from '@/pages/model.data';
 
 export interface OauthType {}
@@ -17,6 +17,7 @@ export interface ModelType {
   effects: {
     fetch: Effect;
     verification: Effect;
+    denied: Effect;
     allow: Effect;
   };
   reducers: {
@@ -47,13 +48,13 @@ const Model: ModelType = {
         payload: { result },
       });
     },
+    *denied({ payload, callback }, { call }) {
+      const result = yield call(oauthDenied, payload);
+      callback && callback(result);
+    },
     *allow({ payload, callback }, { call, put }) {
       const result = yield call(oauthAllow, payload);
       callback && callback(result);
-      // yield put({
-      //   type: 'result',
-      //   payload: { result },
-      // });
     },
   },
 

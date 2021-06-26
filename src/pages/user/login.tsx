@@ -22,11 +22,10 @@ class Login extends React.Component<LoginProps, LoginState> {
     snapshot?: any,
   ): void {
     const {
-      result: { code, message, data },
+      result
     } = this.props;
-    if (code === 2000) {
-      console.log(message);
-      window.location.href = data.redirect;
+    if (result && result.code === 2000) {
+      // window.location.href = result.data.redirect;
     }
   }
 
