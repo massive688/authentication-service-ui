@@ -104,7 +104,7 @@ class Index extends React.Component<OauthProps, OauthState> {
     } = this.props;
     if (code === 2000) {
       if (!data.signed) {
-        history.push('sign');
+        history.push('signin');
       }
     }
   }
@@ -163,7 +163,7 @@ class Index extends React.Component<OauthProps, OauthState> {
         return <div>{errmsg}</div>;
       }
     } else {
-      let scope:string = data.scope;
+      let scope: string = data.scope;
       if (scope && scope[0]) {
         switch (scope[0]) {
           case 'single-sign':
