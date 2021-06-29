@@ -1,7 +1,13 @@
 import { Reducer } from 'redux';
 
 import { Effect } from 'dva';
-import { login, logout, oauthAllow, oauthVerify } from '@/service/oauth';
+import {
+  checkSign,
+  login,
+  logout,
+  oauthAllow,
+  oauthVerify,
+} from '@/service/oauth';
 import { ResultType } from '@/pages/model.data';
 
 export interface OauthType {}
@@ -16,6 +22,7 @@ export interface ModelType {
   state: Partial<UserState>;
   effects: {
     login: Effect;
+    check: Effect;
     logout: Effect;
     register: Effect;
   };
@@ -31,9 +38,12 @@ const Model: ModelType = {
     result: {},
   },
   effects: {
+    *check({ callback }, { call }) {
+      yield call(checkSign);
+    },
     *logout({ callback }, { call }) {
       yield call(logout);
-      callback && callback()
+      callback && callback();
     },
     *login({ payload }, { call, put }) {
       const result = yield call(login, payload);

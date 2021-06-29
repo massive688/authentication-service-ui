@@ -1,44 +1,45 @@
 import React, { Dispatch } from 'react';
 import { connect } from 'dva';
 import { ResultType } from '@/pages/model.data';
-import { Button, Checkbox, Col, Form, Input, Row } from 'antd';
+import { Button, Checkbox, Col, Form, Input, Row, Spin } from 'antd';
 import { md5Encrypt } from '@/utils/encrypt';
+import { oauthLoading } from '@/pages/oauth/index.less';
 interface LoginProps {
   result: ResultType;
   dispatch: Dispatch<any>;
+  loading: boolean;
 }
 interface LoginState {}
-@connect(({ user: { result } }: { user: { result: ResultType } }) => ({
-  result,
-}))
+@connect(
+  ({
+    user: { result },
+    loading,
+  }: {
+    user: { result: ResultType };
+    loading: { effects: { [key: string]: boolean } };
+  }) => ({
+    result,
+    loading: loading.effects['oauth/check'],
+  }),
+)
 class Login extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'user/check',
+    });
   }
+
+  componentDidMount(): void {}
 
   componentDidUpdate(
     prevProps: Readonly<LoginProps>,
     prevState: Readonly<LoginState>,
     snapshot?: any,
-  ): void {
-    const {
-      result
-    } = this.props;
-    if (result && result.code === 2000) {
-      // window.location.href = result.data.redirect;
-    }
-  }
+  ): void {}
 
   render(): React.ReactNode {
-    // return <div>
-    //   <Form>
-    //     <Input placeholder={'请输入用户名'}></Input>
-    //     <Input type={'password'} placeholder={'请输入密码'}></Input>
-    //     <Button>登录</Button>
-    //   </Form>
-    // </div>;
-    //http://localhost:8050/oauth/authorize?client_id=hjt676gf769&code_challenge=Qn3Kywp0OiU4NK_AFzGPlmrcYJDJ13Abj_jdL08Ahg8%3D&code_challenge_method=S256&redirect_uri=http://localhost:8050/account/oauthcode&scope=sign-auth&response_type=code&state=alsd
-
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
@@ -46,6 +47,14 @@ class Login extends React.Component<LoginProps, LoginState> {
     const tailLayout = {
       wrapperCol: { offset: 8, span: 16 },
     };
+    const { loading } = this.props;
+    if (loading) {
+      return (
+        <div className={oauthLoading}>
+          <Spin size={'large'}></Spin>
+        </div>
+      );
+    }
 
     const onFinish = (values: any) => {
       console.log('Success:', values);

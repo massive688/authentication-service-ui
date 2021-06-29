@@ -104,7 +104,9 @@ class Index extends React.Component<OauthProps, OauthState> {
     } = this.props;
     if (code === 2000) {
       if (!data.signed) {
-        history.push('signin');
+        history.push(
+          'signin?return_uri=' + encodeURIComponent(data.return_uri),
+        );
       }
     }
   }
@@ -163,21 +165,12 @@ class Index extends React.Component<OauthProps, OauthState> {
         return <div>{errmsg}</div>;
       }
     } else {
-      let scope: string = data.scope;
-      if (scope && scope[0]) {
-        switch (scope[0]) {
-          case 'single-sign':
-            this.allowAuthorize();
-            return <span></span>;
-          default:
-            return (
-              <div>
-                <Button onClick={this.noAllow}>No</Button>
-                <Button onClick={this.allowAuthorize}>Allow</Button>
-              </div>
-            );
-        }
-      }
+      return (
+        <div>
+          <Button onClick={this.noAllow}>No</Button>
+          <Button onClick={this.allowAuthorize}>Allow</Button>
+        </div>
+      );
     }
     return (
       <div>

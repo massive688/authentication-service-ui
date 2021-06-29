@@ -7,6 +7,9 @@ export async function login(params: ParamsType) {
     data: params,
   });
 }
+export async function checkSign() {
+  return request.post('/api/oauth/check');
+}
 export async function logout() {
   return request.post('/api/oauth/logout');
 }
