@@ -4,7 +4,7 @@
  */
 import { extend, RequestInterceptor, RequestOptionsInit } from 'umi-request';
 import { notification } from 'antd';
-
+import { history } from 'umi';
 const codeMessage: any = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -74,7 +74,6 @@ const useRequestFn = async (url: string, options: RequestOptionsInit) => {
 // @ts-ignore
 request.interceptors.request.use(useRequestFn);
 request.interceptors.response.use(async (response: any) => {
-  console.log(response);
   let singedToken = response.headers.get(signTokenKey);
   if (singedToken) {
     localStorage.setItem(signTokenKey, singedToken);
@@ -85,10 +84,14 @@ request.interceptors.response.use(async (response: any) => {
   }
   const responseData = await response.clone().json();
   if (responseData) {
-    let {code, message, data} = responseData
+    let { code, message, data } = responseData;
     switch (code) {
       case 4213:
       case 4214:
+        return false;
+      case 4251: //login redirect
+        // location.href = "/oauth/signin?return_uri=" + encodeURIComponent(data);
+        history.push('/oauth/signin?return_uri=' + encodeURIComponent(data));
         return false;
       case 3021:
         location.href = data;

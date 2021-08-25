@@ -97,19 +97,7 @@ class Index extends React.Component<OauthProps, OauthState> {
     prevProps: Readonly<OauthProps>,
     prevState: Readonly<OauthState>,
     snapshot?: any,
-  ): void {
-    const {
-      loadedResult: { code, message, data },
-      history,
-    } = this.props;
-    if (code === 2000) {
-      if (!data.signed) {
-        history.push(
-          'signin?return_uri=' + encodeURIComponent(data.return_uri),
-        );
-      }
-    }
-  }
+  ): void {}
 
   setPreLoadingFalse = () => {
     this.setState({ preLoading: false });
@@ -179,9 +167,6 @@ class Index extends React.Component<OauthProps, OauthState> {
         <Button type="primary" onClick={this.clickContinueFetch}>
           Button
         </Button>
-        <div>
-          <QRCode value={url} style={{ margin: '30px' }} />
-        </div>
       </div>
     );
   }
